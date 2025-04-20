@@ -3,4 +3,4 @@
   condition: evt.raw contains "hello"
   output: "Hello event detected: %evt.raw"
   priority: INFO
-  source: dummy
+  source: hello
