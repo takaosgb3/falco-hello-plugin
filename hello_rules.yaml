@@ -1,0 +1,6 @@
+- rule: Hello Event Rule
+  desc: Detects "hello" message from custom hello plugin
+  condition: evt.raw contains "hello"
+  output: Hello event detected: %evt.raw
+  priority: INFO
+  source: hello

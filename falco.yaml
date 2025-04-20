@@ -1,0 +1,10 @@
+plugins:
+  - name: hello
+    library_path: /usr/share/falco/plugins/libhello.so
+    init_config: ""
+    open_params: ""
+
+load_plugins: [hello]
+
+stdout_output:
+  enabled: true
