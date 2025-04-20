@@ -18,9 +18,6 @@ limitations under the License.
 package main
 
 import (
-	"io"
-
-	"github.com/falcosecurity/plugin-sdk-go/pkg/sdk"
 	"github.com/falcosecurity/plugin-sdk-go/pkg/sdk/plugins"
 	"github.com/falcosecurity/plugin-sdk-go/pkg/sdk/plugins/extractor"
 	"github.com/falcosecurity/plugin-sdk-go/pkg/sdk/plugins/source"
@@ -34,14 +31,6 @@ func init() {
 		extractor.Register(p)
 		return p
 	})
-}
-
-func (p *Plugin) String(in sdk.EventReader) (string, error) {
-	data, err := io.ReadAll(in.Reader())
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
 }
 
 func main() {}
