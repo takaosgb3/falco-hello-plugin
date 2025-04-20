@@ -1,0 +1,45 @@
+name: Test libdummy.so with Falco
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-libdummy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Install build tools
+        run: sudo apt-get update && sudo apt-get install -y build-essential
+
+      - name: Build libdummy.so
+        run: |
+          go build -buildmode=c-shared -o libdummy.so ./plugin
+
+      - name: Run Falco with libdummy.so
+        run: |
+          docker run --rm -t \
+            --platform=linux/amd64 \
+            --privileged \
+            -v $(pwd)/libdummy.so:/usr/share/falco/plugins/libdummy.so \
+            -v $(pwd)/falco.yaml:/etc/falco/falco.yaml \
+            -v $(pwd)/hello_rules.yaml:/etc/falco/rules/hello_rules.yaml \
+            falcosecurity/falco:latest \
+            falco -c /etc/falco/falco.yaml -r /etc/falco/rules/hello_rules.yaml | tee falco.log
+
+      - name: Check for hello detection
+        run: |
+          if grep -q "Hello event detected" falco.log; then
+            echo "✅ Hello event detected!"
+          else
+            echo "❌ Hello event not detected."
+            exit 1
+          fi
